@@ -10,11 +10,27 @@ app.use(cors());
 const users = [];
 
 function checksExistsUserAccount(request, response, next) {
-  // Complete aqui
+  const {username} = request.headers;
+
+  const user = users.find(user => user.username === username);
+
+  if (!user) {
+    return response.status(404).send();
+  }
+
+  request.user = user;
+
+  return next();
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const {user} = request;
+
+  if (user.pro === true || user.todos.length < 10) {
+    return next();
+  }
+
+  return response.status(403).send();
 }
 
 function checksTodoExists(request, response, next) {
